@@ -6,7 +6,7 @@ const c = canvas.getContext('2d');
 
 canvas.width = innerWidth;
 canvas.height = innerHeight;
- 
+
 addEventListener('resize', () => {
     canvas.width = innerWidth
     canvas.height = innerHeight
@@ -25,7 +25,7 @@ addEventListener('mousemove', (event) => {
 })
 
 const gravity = 0.005;
-// const friction = 0.98;
+const friction = 0.999;
 class Circle {
     constructor(x, y, radius, velocity, color) {
         this.x = x;
@@ -36,19 +36,24 @@ class Circle {
         this.alpha = 1;
 
         this.draw = () => {
+            c.save();
+            c.globalAlpha = this.alpha;
             c.beginPath();
             c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-            c.globalAlpha = 0.567;
+            // c.globalAlpha = 0.17;
             c.fillStyle = this.color;
             c.fill();
             c.closePath();
+            c.restore();
         }
 
         this.update = () => {
-            // this.velocity.x *= friction;
-            this.velocity.y += gravity;            
+            this.velocity.x *= friction;
+            this.velocity.y *= friction;
+            this.velocity.y += gravity;
             this.x += this.velocity.x;
             this.y += this.velocity.y;
+            this.alpha -= 0.005;
 
 
             this.draw();
@@ -59,16 +64,20 @@ class Circle {
 let particles;
 function init() {
     particles = [];
- 
+
 }
 
 function animate() {
     requestAnimationFrame(animate);
-    c.fillStyle = 'rgba(0,0,0, 0.25)';
+    c.fillStyle = 'rgba(0,0,0, 0.05)';
     c.fillRect(0, 0, canvas.width, canvas.height);
 
-    particles.forEach(particle => {
-        particle.update();
+    particles.forEach((particle, i) => {
+        if (particle.alpha > 0) {
+            particle.update();
+        } else {
+            particles.splice(i, 1);
+        }
     });
 
     c.fillText('dattebayo', mouse.x, mouse.y)
@@ -81,14 +90,15 @@ animate();
 addEventListener('click', () => {
     console.log("clicked at", mouse.x, mouse.y);
 
-    const particlesCount = 400;
+    const particlesCount = 4000;
     const angleIncrement = (Math.PI * 2) / particlesCount;
-    
-    for (let i = 0; i < particlesCount; i++) {
-        particles.push(new Circle(mouse.x, mouse.y, 10, {
-            x: Math.cos(angleIncrement * i) * Math.random(), 
-            y:Math.sin(angleIncrement * i) * Math.random()
-        }, randomColor(color2)));
-    }     
+    const power = 16;
 
+    for (let i = 0; i < particlesCount; i++) {
+        particles.push(new Circle(mouse.x, mouse.y, 5, {
+            x: Math.cos(angleIncrement * i) * Math.random() * power,
+            y: Math.sin(angleIncrement * i) * Math.random() * power
+        }, `hsl(${Math.random() * 360}, 50%, 50%)`));
+    }
+    console.log(particles);
 })
