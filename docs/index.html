@@ -13,6 +13,30 @@
             overflow: hidden; 
         }
 
+        .modifier-div {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.4); /* Semi-transparent black */
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            user-select: none; /* Prevents text selection while dragging sliders */
+        }
+        .modifier-div label {
+            display: flex;
+            flex-direction: column;
+            font-size: 14px;
+        }
+        .modifier-div input {
+            margin-top: 5px;
+    cursor: pointer;
+        }
+
         canvas {
             display: block;
         }
@@ -20,6 +44,16 @@
 </head>
 <body>
     <canvas></canvas>
+    <div class="modifier-div">
+        <label>
+            Particles Count: <span id="particles-count">400</span>
+            <input type="range" id="particles-count-slider" min="400" max="10000" value="400">
+        </label>
+        <label>
+            Power: <span id="power">16</span>
+            <input type="range" id="power-slider" min="1" max="50" value="16">
+        </label>
+    </div>
 
     <script type="module" src="canvas.js"></script>
 </body>

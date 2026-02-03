@@ -1,5 +1,10 @@
-import { randomIntFromRange, randomColor, distance } from './utils/utils.js';
-import { color3, color2, color5 } from './utils/colorArrays.js';
+// import { randomIntFromRange, randomColor, distance } from './utils/utils.js';
+// import { color3, color2, color5 } from './utils/colorArrays.js';
+
+const particlesCount = document.getElementById("particles-count");
+const inputParticles = document.getElementById("particles-count-slider");
+const power = document.getElementById("power");
+const inputPower = document.getElementById("power-slider");
 
 const canvas = document.querySelector('canvas');
 const c = canvas.getContext('2d');
@@ -12,6 +17,21 @@ addEventListener('resize', () => {
     canvas.height = innerHeight
 
     init()
+})
+
+const setting = {
+    particlesCount: 400,
+    power: 16
+}
+
+inputParticles.addEventListener('input', (e) => {
+    setting.particlesCount = Number(e.target.value);
+    particlesCount.innerText = setting.particlesCount;
+});
+
+inputPower.addEventListener('input', (e) => {
+    setting.power = Number(e.target.value);
+    power.innerText = setting.power;
 })
 
 var mouse = {
@@ -90,14 +110,12 @@ animate();
 addEventListener('click', () => {
     console.log("clicked at", mouse.x, mouse.y);
 
-    const particlesCount = 4000;
-    const angleIncrement = (Math.PI * 2) / particlesCount;
-    const power = 16;
+    const angleIncrement = (Math.PI * 2) / setting.particlesCount;
 
-    for (let i = 0; i < particlesCount; i++) {
+    for (let i = 0; i < setting.particlesCount; i++) {
         particles.push(new Circle(mouse.x, mouse.y, 5, {
-            x: Math.cos(angleIncrement * i) * Math.random() * power,
-            y: Math.sin(angleIncrement * i) * Math.random() * power
+            x: Math.cos(angleIncrement * i) * Math.random() * setting.power,
+            y: Math.sin(angleIncrement * i) * Math.random() * setting.power
         }, `hsl(${Math.random() * 360}, 50%, 50%)`));
     }
     console.log(particles);
